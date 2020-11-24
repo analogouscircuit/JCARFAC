@@ -1,0 +1,3 @@
+[submodule "ccarfac"]
+	path = ccarfac
+	url = https://github.com/analogouscircuit/ccarfac

@@ -122,7 +122,7 @@ function init(bmp::Ref{BMParams}, ihcp::Ref{IHCParams}, ohcp::Ref{OHCParams},
 			  blocksize::Int, fs::Float64)
 	blocksize = Int32(blocksize)
 	carfacstateptr = ccall(
-						(:carfacagc_init, "/home/dahlbom/research/ccarfac/libcarfac.so"),
+						(:carfacagc_init, "../ccarfac/src/libcarfac.so"),
 						Ptr{CARFACAGCState},
 						(Ref{BMParams}, Ref{IHCParams}, Ref{OHCParams}, Int32, Float64),
 						bmp, ihcp, ohcp, blocksize, fs)
@@ -145,7 +145,7 @@ function processblock(carfacstate::Ptr{CARFACAGCState}, signal::Array{Float64,1}
 	# @assert carfacstate.num_sections == length(signal) "Block size doesn't match signal length"
 	signal_ref = Base.unsafe_convert(Ptr{Cdouble}, Base.cconvert(Ptr{Cdouble}, signal))
 	success = ccall(
-					(:carfacagc_process_block, "/home/dahlbom/research/ccarfac/libcarfac.so"),
+					(:carfacagc_process_block, "../ccarfac/src/libcarfac.so"),
 					Cint,
 					(Ptr{CARFACAGCState},Ptr{Cdouble}),
 					carfacstate, signal_ref)
@@ -195,7 +195,7 @@ Free the CARFAC state data.
 """
 function free(carfacstate::Ptr{CARFACAGCState})
 	success = ccall(
-	 	  (:carfacagc_free,"/home/dahlbom/research/ccarfac/libcarfac.so"),
+	 	  (:carfacagc_free,"../ccarfac/src/libcarfac.so"),
 		  Cint,
 		  (Ptr{CARFACAGCState},),
 		  carfacstate)
