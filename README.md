@@ -2,8 +2,7 @@
 Julia wrappers for the [ccarfac](https://github.com/analogouscircuit/ccarfac) library
 (an implementation of Richard Lyon's CARFAC model of the auditory periphery).
 
-This module requires libcarfac.so, which can be compiled from the [ccarfac](https://github.com/analogouscircuit/ccarfac) repo.  
-The ccarfac repository is included as a submodule of this project, so, after cloning JCARFAC repo, it is only necessary to execute
+This module requires libcarfac.so, which can be compiled from the [ccarfac](https://github.com/analogouscircuit/ccarfac) repo. The ccarfac repository is included as a submodule of this project, so, after cloning JCARFAC repo, it is only necessary to execute
 `git submodule init` and then `git submodule update`.  There is a makefile in the ccarfac project for compiling
 libcarfac.  Note that `ccall`, the function for executing C code within Julia, requires a literal expression
 for the location of the library being called.  You may have to modify the library location at each instance of `ccall`
