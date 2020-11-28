@@ -171,13 +171,8 @@ end
 
 Pull the output of the inner hair cells from the CARFAC state data so it is
 available in Julia.
-
-(NOTE: transferring memory ownership through own=false in unsafe_unwrap
-seemed to cause problems when using carfacagc_free_except_signal...
-
-Here we're just copying the data over so the whole structure can be freed at once.)
 """
-function copynap(carfacstate::Ptr{CARFACAGCState}; reshape=true)
+function copynap(carfacstate::Ptr{CARFACAGCState}; julialayout=true)
     carfacstate_local = Base.unsafe_load(carfacstate)
     numsections = carfacstate_local.num_sections
     numpoints = carfacstate_local.block_size
@@ -186,21 +181,12 @@ function copynap(carfacstate::Ptr{CARFACAGCState}; reshape=true)
     nap = unsafe_wrap(Array, carfacstate_local.ihc_out,
                       numsections*numpoints, own=false) |> copy
     fcs = reverse(fcs)
-    if reshape
+    if julialayout
         nap = nap |>
               x -> reshape(x, (numpoints, numsections)) |>
               transpose |>
               x -> reverse(x, dims=1)
     end
-    # success = ccall(
-    #               (:carfacagc_free_except_signal,
-    #               "/home/dahlbom/research/ccarfac/libcarfac.so"),
-    #               Cint,
-    #               (Ptr{CARFACAGCState},),
-    #               carfacstate)
-    # if success != 0
-    #   error("CARFAC failed to free state data.")
-    # end
     return nap, fcs 
 end
 
@@ -208,8 +194,7 @@ end
 """
     copysai(sai::Ptr{SAI})
 
-Copy SAI data into Julia structure.  (Doesn't take ownership
-of data, since C function is called to free the original data structure.)
+Copy SAI data into Julia structure.  
 """
 function copysai(sai::Ptr{SAI})
     # Copy data locally
@@ -277,13 +262,13 @@ IHCParams() = IHCParams(20.0,10.0e-3,0.5e-3,80.0e-6)
 
 
 """
-    defaultparams(numsections=72)
+    defaultparams(numsections=40)
 
 Generate default parameters for the CARFAC model. Returns parameter structures
 for the basilar membrane (bmp), inner hair cells (ihcp), and outer hair cells
 (ohcp).
 """
-function defaultparams(numsections=72)
+function defaultparams(numsections=40)
     bvals = ones(Float64,numsections) 
     bvals_ref = Base.unsafe_convert(Ptr{Cdouble}, Base.cconvert(Ptr{Cdouble}, bvals)) 
     ohcp  = OHCParams(0.1,0.04,bvals_ref)
@@ -349,9 +334,9 @@ function calcsai(signal::Array{Float64,1}, fs::T,
     return sai, fcs
 end
 
-function calcsai(signal::Array{Float64,1}, fs::T;
-                 trigwindowtime = 0.010, advancestep = 0.005,
-                 numtrigwindows = 4) where T <: Number = 
+calcsai(signal::Array{Float64,1}, fs::T;
+        trigwindowtime = 0.010, advancestep = 0.005,
+        numtrigwindows = 4) where T <: Number = 
     calcsai(signal, fs, defaultparams()...; trigwindowtime=trigwindowtime,
             advancestep=advancestep, numtrigwindows=numtrigwindows)
 
