@@ -20,7 +20,7 @@ just call `JCARFAC.calcnap(sig, fs)`.  This will return a tuple `(nap, cfs)`, wh
 the neural activity pattern, and `cfs` will contain the center frequencies for each channel.  Plotting via `heatmap(nap)`
 will give you quick visual feedback. It is possible to modify the parameters of the model by declaring parameter structures
 for the basilar membrane (`BMParams`), inner hair cells (`IHCParams`), and outer hair cells (`OHCParams`).  With these in
-hand, simply call `calcnap(bmp, ihcp, ohcp, signal, fs)`, where `bmp`, `ihcp`, and `ohcp` are your parameter structures.
+hand, simply call `calcnap(signal, fs, bmp, ihcp, ohcp)`, where `bmp`, `ihcp`, and `ohcp` are your parameter structures.
 
 Additionally, there is a function `JCARFAC.calcsai(sig, fs)` which can be used to generate a movie of stabilized auditory
 images.  An example is shown below.
