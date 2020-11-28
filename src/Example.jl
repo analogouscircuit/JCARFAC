@@ -24,7 +24,7 @@ function plotnap(nap::Array{Float64,2}, fcs::Array{Float64,1}, fs)
              guidefontsize=14,
              yticks = (ytickvals, yticklabels),
              legend=false,
-             size = (900,700))
+             size = (600,400))
     zeroline = zeros(numpoints)
     for c ∈ numchannels:-1:1
         plot!(p, ts, [ (nap[c,:] .+ 0.05*(c-1)) (nap[c,:] .+ 0.05*(c-1))];
