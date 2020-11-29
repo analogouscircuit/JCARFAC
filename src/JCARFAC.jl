@@ -11,7 +11,7 @@ module JCARFAC
 
 using Match
 
-export calcnap, calcsai, defaultparams, BMParams, IHCParams, OHCParams
+export calcnap, calcsai, defaultparams, BMParams, IHCParams, OHCParams, JSAI
 
 ################################################################################
 # Data Types
@@ -317,7 +317,7 @@ function calcsai(signal::Array{Float64,1}, fs::T,
     fs = Float64(fs)
     state_ptr = initcarfac(bmp, ihcp, ohcp, length(signal), fs)
     processblock(state_ptr, signal)
-    nap, fcs = copynap(state_ptr; reshape=false)
+    nap, fcs = copynap(state_ptr; julialayout=false)
     carfacstate_local = Base.unsafe_load(state_ptr)
     numsections = carfacstate_local.num_sections
     numpoints = carfacstate_local.block_size

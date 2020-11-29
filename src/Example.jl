@@ -8,10 +8,10 @@ using Formatting
 ################################################################################
 # Plotting Functions 
 ################################################################################
-function plotnap(nap::Array{Float64,2}, fcs::Array{Float64,1}, fs)
+function plotnap(nap::Array{Float64,2}, fcs::Array{Float64,1}, fs;
+                offset=0.05)
     numchannels, numpoints = size(nap)
     ts = (0:numpoints) .* (1/fs)
-    offset = 0.05
     ytickvals = 1:4:numchannels
     channels = fcs[ytickvals]
     ytickvals = Float64.(ytickvals) .* offset
@@ -43,22 +43,40 @@ end
 
 ## Generate in input signal -- here a harmonic complex
 fs = 44100.0
-f0 = 440.0
-dur = 0.1
-numharmonics = 8
+f0 = 120.0
+dur = 0.250
+numharmonics = 12
 ts = 0:1/fs:dur
 sig = zeros(length(ts))
 for k ∈ 1:numharmonics
     sig .+= (1.0/k)*sin.(2π*f0*k .* ts)
 end
+windur = 0.020
+numsteps = Int(round(fs*windur))
+steps = 0:numsteps-1
+sig[1:numsteps] .*= sin.((π/2)*steps ./ numsteps)
+sig[end-numsteps+1:end] .*= cos.((π/2)*steps ./ numsteps)
+
 
 ## Generate NAP for entire signal
 nap, fcs = calcnap(sig, fs)
 p_nap = plotnap(nap, fcs, fs)
 
 
-
 ## Generate SAI movie
+sai, fcs = calcsai(sig, fs, defaultparams(72)...;
+                   trigwindowtime = 0.02, 
+                   advancestep = 0.001,
+                   numtrigwindows=3)
+anim = @animate for k ∈ Int(round(sai.numframes/2)):sai.numframes
+    heatmap(sai.images[k,:,:];
+            xticks=:none,
+            yticks=:none,
+            legend=false,
+            c=:thermal, clims=(0,0.1))
+end
+gif(anim, "saimovie.gif"; fps=25);
+
 
 
 
