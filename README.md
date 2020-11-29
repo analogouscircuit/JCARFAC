@@ -23,6 +23,11 @@ for the basilar membrane (`BMParams`), inner hair cells (`IHCParams`), and outer
 hand, simply call `calcnap(signal, fs, bmp, ihcp, ohcp)`, where `bmp`, `ihcp`, and `ohcp` are your parameter structures.
 
 Additionally, there is a function `JCARFAC.calcsai(sig, fs)` which can be used to generate a movie of stabilized auditory
-images.  An example is shown below.
+images.  An example is shown below, with the CARFAC model operating on a harmonic complex with an F0 of 120 Hz.
+(Note: SAI support is still being developed.)
+
+![sai animation](/images/saimovie.gif)
+
+
 
 An simple example is provided in `Example.jl`. The members of the parameter structures can be found in `JCARFAC.jl`.
