@@ -9,8 +9,6 @@ SAI (Stabilized Auditory Image) functionality forthcoming.
 """
 module JCARFAC
 
-using Match
-
 export calcnap, calcsai, defaultparams, BMParams, IHCParams, OHCParams, JSAI
 
 ################################################################################
